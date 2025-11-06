@@ -10,6 +10,8 @@ import com.devsuperior.dsmeta.dto.SallesSumaryDTO;
 import com.devsuperior.dsmeta.projection.SallesMinProjection;
 import com.devsuperior.dsmeta.projection.SallesReportProjection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.devsuperior.dsmeta.dto.SaleMinDTO;
@@ -28,21 +30,19 @@ public class SaleService {
 		return new SaleMinDTO(entity);
 	}
 
-    public List<SallesSumaryDTO> SallesSumary(LocalDate minDate, LocalDate maxDate, String name){
+    public Page<SallesSumaryDTO> SallesSumary(LocalDate minDate, LocalDate maxDate, String name, Pageable pageable) {
 
-        System.out.println("minDate" + minDate);
-        System.out.println("maxDate" + maxDate);
-        System.out.println("name" + name);
+        System.out.println("minDate: " + minDate);
+        System.out.println("maxDate: " + maxDate);
+        System.out.println("name: " + name);
 
-        List<SallesMinProjection> projection = repository.SallesByPeriodOfSeller(minDate, maxDate, name);
+        Page<SallesMinProjection> projection = repository.SallesByPeriodOfSeller(minDate, maxDate, name, pageable);
 
-        List<SallesSumaryDTO> listDTO = new ArrayList<>();
+        Page<SallesSumaryDTO> dtoPage = projection.map(SallesSumaryDTO::new);
 
-        for (SallesMinProjection proj : projection){
-            listDTO.add(new SallesSumaryDTO(proj));
-        }
-        return listDTO;
+        return dtoPage;
     }
+
 
     public List<SallesReportDTO> sallesReport(LocalDate minDate, LocalDate maxDate, String name){
 
