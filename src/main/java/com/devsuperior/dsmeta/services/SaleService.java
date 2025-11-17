@@ -44,20 +44,17 @@ public class SaleService {
     }
 
 
-    public List<SallesReportDTO> sallesReport(LocalDate minDate, LocalDate maxDate, String name){
+    public Page<SallesReportDTO> sallesReport(LocalDate minDate, LocalDate maxDate, String name, Pageable pageable){
 
         System.out.println("minDate" + minDate);
         System.out.println("maxDate" + maxDate);
         System.out.println("name" + name);
 
-        List<SallesReportProjection> projection = repository.sallesReport(minDate, maxDate, name);
+        Page<SallesReportProjection> projection = repository.sallesReport(minDate, maxDate, name, pageable);
 
-        List<SallesReportDTO> listDTO = new ArrayList<>();
+        Page<SallesReportDTO> dtoPage = projection.map(SallesReportDTO::new);
 
-        for (SallesReportProjection proj : projection){
-            listDTO.add(new SallesReportDTO(proj));
-        }
-        return listDTO;
+        return dtoPage;
     }
 
 }
